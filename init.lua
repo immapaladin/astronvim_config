@@ -124,7 +124,7 @@ local config = {
       symbols_outline = false,
       telescope = true,
       treesitter = true,
-      vimwiki = false,
+      vimwiki = true,
       ["which-key"] = true,
     },
   },
@@ -208,16 +208,46 @@ local config = {
       ["<leader>bt"] = { "<cmd>BufferLineSortByTabs<cr>", desc = "Sort by tabs" },
       -- quick save
       -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+      -- change focus exploer to leader a
+      ["<Leader>a"] = {":Neotree focus<cr>", desc = "Focus Explorer"},
+      ["<Leader>o"] = false,
+
     },
     t = {
       -- setting a mapping to false will disable it
-      -- ["<esc>"] = false,
+      -- ["<esc>"] = false
+      ["<Leader>o"] = false,
     },
   },
 
   -- Configure plugins
   plugins = {
     init = {
+        {
+        "folke/trouble.nvim",
+        requires = "nvim-tree/nvim-web-devicons",
+        config = function()
+        require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+        }
+        end,
+        },
+        {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+        require("copilot").setup({})
+        end,
+        },
+        {
+            'nvim-orgmode/orgmode', 
+            config = function()
+            require('orgmode').setup{}
+            end,
+        },
       -- You can disable default plugins as follows:
       -- ["goolord/alpha-nvim"] = { disable = true },
 
@@ -310,7 +340,7 @@ local config = {
     --   colors.git_branch_fg = astronvim.get_hlgroup "Conditional"
     --   return colors
     -- end,
-    -- -- Customize attributes of highlighting in Heirline components
+    -- -- Customize attributes of highligh ting in Heirline components
     -- attributes = {
     --   -- styling choices for each heirline element, check possible attributes with `:h attr-list`
     --   git_branch = { bold = true }, -- bold the git branch statusline component
@@ -336,6 +366,8 @@ local config = {
           -- third key is the key to bring up next level and its displayed
           -- group name in which-key top level menu
           ["b"] = { name = "Buffer" },
+          ["a"] = { name = "Focus Explorer"},
+          ["o"] = {name = "Org"},
         },
       },
     },
@@ -358,6 +390,17 @@ local config = {
     --   },
     -- }
     --
+    local unmap = vim.keymap.del
+
+    unmap("n", "<Leader>o")
+    local org = require('orgmode')
+
+    org.setup_ts_grammar()
+    org.setup({
+    org_agenda_files = {'~/agenda/*.org'},
+    org_default_notes_file = '~/org/file.org',
+    
+    })
     vim.opt.shortmess:append { s = true, I = true } -- disable startup message
     vim.opt.shell = vim.fn.executable "pwsh" and "pwsh" or "powershell"
     vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
