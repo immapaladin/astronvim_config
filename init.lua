@@ -399,6 +399,13 @@ local config = {
     org.setup({
     org_agenda_files = {'~/agenda/*.org'},
     org_default_notes_file = '~/org/file.org',
+    org_capture_templates = {
+        r = {
+        description = "Repo",
+        template = "* [[%x][%(return string.match('%x', '([^/]+)$'))]]%?",
+        target = "~/org/repos.org",
+        }
+    },
     
     })
     vim.opt.shortmess:append { s = true, I = true } -- disable startup message
